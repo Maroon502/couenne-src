@@ -1,0 +1,13 @@
+   Compiling couenne-src v0.1.0+1.8.9 (/home/dirreck/Desktop/Maroon/couenne-src)
+warning: variable does not need to be mutable
+  --> build.rs:61:9
+   |
+61 |     let mut lib_sources = include_str!("couenne_lib_sources.txt")
+   |         ----^^^^^^^^^^^
+   |         |
+   |         help: remove this `mut`
+   |
+   = note: `#[warn(unused_mut)]` on by default
+
+warning: `couenne-src` (build script) generated 1 warning
+    Finished dev [unoptimized + debuginfo] target(s) in 10.43s

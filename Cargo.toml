@@ -1,0 +1,30 @@
+[package]
+name = "couenne-src"
+version = "0.1.0+1.8.9"
+edition = "2021"
+build = "build.rs"
+links = "Couenne"
+license = "Apache-2.0"
+description = "Redistribution of Coin-OR Couenne as a crate"
+documentation = "https://docs.rs/couenne-src/"
+repository = "https://github.com/Maroon502/couenne-src.git"
+keywords = ["coin-or", "couenne", "couenne-src"]
+readme = "README.md"
+authors = [
+    "Maroon502<maroon502@outlook.com>"
+]
+exclude = [
+    "Couenne/**/*",
+    "!Couenne/Couenne/src/**/*",
+    "!**/LICENSE",
+]
+
+[features]
+default = ["bonmin-src/default"]
+
+[dependencies]
+bonmin-src = { version = "0.1", default-features = false }
+
+[build-dependencies]
+cc = { version = "1.0" }
+coin-build-tools = "0.2"

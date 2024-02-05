@@ -1,0 +1,3 @@
+[submodule "Couenne"]
+	path = Couenne
+	url = https://github.com/coin-or/Couenne.git
