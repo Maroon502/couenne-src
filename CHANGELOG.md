@@ -8,9 +8,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.1.0+1.8.9](https://github.com/Maroon502/couenne-src/releases/tag/v0.1.0+1.8.9) - 2024-04-11
 
-### Added
-- allow to link to system libraries
-
-### Other
-- Update Action
-- first commit
+first version
