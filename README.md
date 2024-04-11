@@ -4,7 +4,7 @@
 
 ## description
 
-couenne-src crate is a *-src crate. This links [Couenne] libraries to executable build by cargo, but does not provide Rust bindings.
+`Couenne-src` crate is a *-src crate. This links [Couenne] libraries to executable build by cargo, but does not provide Rust bindings. [Couenne] is built with [CoinUtils] ([CoinUtils-src]), [Osi] ([Osi-src]), [Cgl] ([Cgl-src]), [Clp] ([Clp-src]), [Cbc] ([Cbc-src]), [Ipopt] ([Ipopt-src]), [Mumps] ([Mumps-src])(Optional), [OpenBLAS] ([OpenBLAS-src])(Optional), [Intel-mkl] ([intel-mkl-src])(Optional) and [Bonmin] ([Bonmin-src]).
 
 By this package, you don't need to worry about installing Couenne in the system, and it's a package for **all platforms**.
 
@@ -16,7 +16,7 @@ By this package, you don't need to worry about installing Couenne in the system,
 
     ```toml
     [dependencies]
-    couenne-src = "0.1"
+    couenne-src = "\*"
     ```
 
 2. add the following to your `lib.rs`:
@@ -25,15 +25,45 @@ By this package, you don't need to worry about installing Couenne in the system,
     extern crate couenne_src;
     ```
 
-This package does not provide bindings.
+This package does not provide bindings. There's no C interface now.
 
 ## Configuration
 
-The following Cargo features are supported:
+### Environment
 
-* `default`;
-* `cplex` to build with cplex(Need to install cplex in the system);
-* `filtersqp` to build with filtersqp(Need to install filtersqp in the system);
+The package build from the source and link statically by default. It also provide the following environment variables to allow users to link to system library customly:
+
+* `CARGO_COUENNE_STATIC` to link to Couenne statically;
+* `CARGO_COUENNE_SYSTEM` to link to Couenne system library;
+* `CARGO_BONMIN_STATIC` to link to Bonmin statically;
+* `CARGO_BONMIN_SYSTEM` to link to Bonmin system library;
+* `CARGO_IPOPT_STATIC` to link to Ipopt statically;
+* `CARGO_IPOPT_SYSTEM` to link to Ipopt system library;
+* `CARGO_MUMPS_STATIC` to link to Mumps statically;
+* `CARGO_MUMPS_SYSTEM` to link to Mumps system library;
+* `CARGO_COINUTILS_STATIC` to link to CoinUtils statically;
+* `CARGO_COINUTILS_SYSTEM` to link to CoinUtils system library;
+* `CARGO_OSI_STATIC` to link to Osi statically;
+* `CARGO_OSI_SYSTEM` to link to Osi system library;
+* `CARGO_CLP_STATIC` to link to Clp statically;
+* `CARGO_CLP_SYSTEM` to link to Clp system library;
+* `CARGO_CGL_STATIC` to link to Cgl statically;
+* `CARGO_CGL_SYSTEM` to link to Cgl system library;
+* `CARGO_CBC_STATIC` to link to Cbc statically;
+* `CARGO_CBC_SYSTEM` to link to Cbc system library;
+
+Set the environment variable to `1` to enable the feature. For example, to link to system library dynamically, set `CARGO_${LIB_NAME}_SYSTEM` to `1`; to link to system library statically, set both `CARGO_${LIB_NAME}_SYSTEM` and `CARGO_${LIB_NAME}_STATIC` to `1`.
+
+If you enable OpenBLAS([openblas-src]), you can also pass env to `make` by `OPENBLAS_*`. Read more at [here](#cross-compilation)
+
+### Others
+
+```toml
+bonmin-src = { version = "\*", default-features = no }
+ipopt-src = { version = "\*", features = ["intel-mkl", "intel-mkl-lp64-seq"] }
+```
+
+ref: [intel-mkl-src], [intel-mkl-src], [ipopt-src], [mumps-src], [bonmin-src]
 
 ## Windows and vcpkg
 
@@ -65,13 +95,13 @@ Please see the ["Static and dynamic C runtimes" in The Rust reference](https://d
 
 ## Cross Compilation
 
-Because [openblas-src]'s Issue [#101](https://github.com/blas-lapack-rs/openblas-src/issues/101), we can't cross compile the package with `openblas-static` feature. So, if you want to cross compile the package, you could use [mike-kfed](https://github.com/mike-kfed/openblas-src/tree/arm-cross-compile) instead.
+If you use OpenBLAS([openblas-src]), you need to set `OPENBLAS_CC`, `OPENBLAS_FC`, `OPENBLAS_HOSTCC`, and `OPENBLAS_TARGET` to pass env to [OpenBLAS], ref:[openblas-src] and [OpenBLAS]. For example:
 
-Add this to your `project/.cargo/config.toml`.
-
-```toml
-[patch.crates-io]
-openblas-src = { git = "https://github.com/mike-kfed/openblas-src.git", branch = "arm-cross-compile" }
+```sh
+export OPENBLAS_TARGET=ARMV8
+export OPENBLAS_HOSTCC=gcc
+export OPENBLAS_CC=aarch64-linux-gnu-gcc
+export OPENBLAS_FC=aarch64-linux-gnu-gfortran
 ```
 
 you can compile it for the other target by providing the `--target` option to `cargo build`.
@@ -80,23 +110,18 @@ you can compile it for the other target by providing the `--target` option to `c
 |--------------------------------------|:-----------:|
 | `arm-unknown-linux-gnueabi`          | ✓   |
 | `arm-unknown-linux-gnueabihf`        | ✓   |
-| `armv7-linux-androideabi`            | ✓   |
 | `armv7-unknown-linux-gnueabi`        | ✓   |
 | `armv7-unknown-linux-gnueabihf`      | ✓   |
 | `armv7-unknown-linux-musleabi`       | ✓   |
 | `armv7-unknown-linux-musleabihf`     | ✓   |
+| `aarch64-unknown-linux-gnu`          | ✓   |
+| `aarch64-unknown-linux-musl`         | ✓   |
 | `riscv64gc-unknown-linux-gnu`        | ✓   |
 | `x86_64-pc-windows-msvc`             | ✓   |
 | `x86_64-unknown-linux-gnu`           | ✓   |
 | others                               | not test   |
 
-On windows, you need to use intel-mkl instead of openblas for ipopt like the following.
-
-```toml
-[dependencies]
-couenne-src = { version = "0.1", default-features = false };
-ipopt-src = { version = "0.2", default-features = false, features = ["intel-mkl", "intel-mkl-system"] };
-```
+Note: `intel-mkl-*` can only be used for `x86_64-*`.`openblas-static` can only be used for `linux`.
 
 ## Contribution
 
@@ -104,8 +129,27 @@ Your contribution is highly appreciated. Do not hesitate to open an issue or a
 pull request. Note that any contribution submitted for inclusion in the project
 will be licensed according to the terms given in [LICENSE](license-url).
 
+[CoinUtils]: https://github.com/coin-or/CoinUtils
+[Osi]: https://github.com/coin-or/Osi
+[Cgl]: https://github.com/coin-or/Cgl
+[Clp]: https://github.com/coin-or/Clp
+[Cbc]: https://github.com/coin-or/Cbc
+[Ipopt]: https://github.com/coin-or/Ipopt
+[Bonmin]: https://github.com/coin-or/Bonmin
 [Couenne]: https://github.com/coin-or/Couenne
-[coincouenne-sys]: https://github.com/Maroon502/coincouenne-sys
+[Mumps]: https://mumps-solver.org/
+[OpenBLAS]: https://github.com/OpenMathLib/OpenBLAS
+[intel-mkl]: https://www.intel.com/content/www/us/en/developer/tools/oneapi/onemkl.html
+
+[CoinUtils-src]: https://github.com/Maroon502/coinutils-src
+[Cgl-src]: https://github.com/Maroon502/cgl-src
+[Clp-src]: https://github.com/Maroon502/clp-src
+[Osi-src]: https://github.com/Maroon502/osi-src
+[Ipopt-src]: https://github.com/Maroon502/ipopt-src
+[Mumps-src]: https://github.com/Maroon502/mumps-src
+[Bonmin-src]: https://github.com/Maroon502/bonmin-src
+[OpenBLAS-src]: https://github.com/blas-lapack-rs/openblas-src
+[intel-mkl-src]: https://github.com/rust-math/intel-mkl-src
 
 [vcpkg]: https://github.com/Microsoft/vcpkg
 

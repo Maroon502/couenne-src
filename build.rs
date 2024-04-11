@@ -19,6 +19,16 @@ fn main() {
         LIB_NAME.to_ascii_uppercase()
     );
 
+    if want_system && link::link_lib_system_if_supported(LIB_NAME) {
+        let mut coinflags = vec!["IPOPT".to_string()];
+
+        let (_, coinflags_other) = coinbuilder::get_metadata_from("Bonmin");
+        coinflags.extend(coinflags_other);
+
+        coinbuilder::print_metadata(Vec::new(), coinflags);
+        return;
+    }
+
     if !Path::new(&format!("{}/LICENSE", LIB_NAME)).exists() {
         utils::update_submodules(env::var("CARGO_MANIFEST_DIR").unwrap());
     }
