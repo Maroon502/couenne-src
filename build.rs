@@ -19,6 +19,8 @@ fn main() {
         LIB_NAME.to_ascii_uppercase()
     );
 
+    let want_system = utils::want_system(LIB_NAME);
+    
     if want_system && link::link_lib_system_if_supported(LIB_NAME) {
         let mut coinflags = vec!["IPOPT".to_string()];
 
