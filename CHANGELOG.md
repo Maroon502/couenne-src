@@ -6,6 +6,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.0+1.8.9](https://github.com/Maroon502/couenne-src/releases/tag/v0.1.0+1.8.9) - 2024-08-20
+
+### Added
+- allow to link to system libraries
+
+### Other
+- Bump cc from 1.0 to 1.1
+- release v0.1.0+1.8.9 ([#1](https://github.com/Maroon502/couenne-src/pull/1))
+- Update Action
+- first commit
+
 ## [0.1.0+1.8.9](https://github.com/Maroon502/couenne-src/releases/tag/v0.1.0+1.8.9) - 2024-04-11
 
 first version
